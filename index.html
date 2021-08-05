@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>singleSPA</title>
+  </head>
+  <body>
+    <script src="lib/umd/single-spa.js"></script>
+    <script>
+      /**
+       * singleSpa.registerApplication: 默认会注册/预加载应用
+       * appName: 应用名字
+       * loadApp: 加载函数,加载app的方法(必须返回的是promise)，返回的结果必须包含bootstrap、mount和 unmount做为接入协议
+       * activityWhen: 满足条件时调用loadApp方法
+       * customProps: 自定义属性,可用于父子应用通信
+       */
+      singleSpa.registerApplication(
+        "app1",
+        async () => {
+          // 这个函数必须返回生命周期函数
+          return {
+            bootstrap: async () => {
+              console.log("应用启动");
+            }, // 此处可以传多个函数
+            mount: async () => {
+              console.log("应用挂载");
+            },
+            unmount: async () => {
+              console.log("应用卸载");
+            },
+          };
+        },
+        (location) => location.hash.startsWith("#/app1"),// hash pathname h5api browserApi
+        { store: { name: "zf" } }
+      );
+      singleSpa.start();// 启动/挂载应用
+    </script>
+  </body>
+</html>
