@@ -1,5 +1,13 @@
 import { reroute } from "../navigations/reroute";
-import { NOT_LOADED } from "./app.helper";
+import {
+  LOADING_SOURCE_CODE,
+  MOUNTED,
+  NOT_BOOTSTRAPPED,
+  NOT_LOADED,
+  NOT_MOUNTED,
+  shouldBeActive,
+  SKIP_BECAUSE_BROKEN,
+} from "./app.helper";
 const apps = []; // 用来存放所有的应用
 /**
  *
@@ -17,5 +25,33 @@ export function registerApplication(appName, loadApp, activeWhen, customProps) {
     status: NOT_LOADED, // 默认应用为未加载
   });
   // 这里就将应用注册好了
-  reroute()// 加载应用
+  reroute(); // 加载应用
+}
+export function getAppChanges() {
+  const appsToUnmount = []; // 要被卸载的app
+  const appsToLoad = []; // 要加载的app
+  const appsToMount = []; // 要挂载的app
+  apps.forEach((app) => {
+    const appShouldBeActive =
+      app.status !== SKIP_BECAUSE_BROKEN && shouldBeActive(app);
+    switch (app.status) {
+      case NOT_LOADED:
+      case LOADING_SOURCE_CODE:
+        if (appShouldBeActive) {
+          appsToLoad.push(app);
+        }
+        break;
+      case NOT_BOOTSTRAPPED:
+      case NOT_MOUNTED:
+        if (appShouldBeActive) {
+          appsToMount.push(app);
+        }
+        break;
+      case MOUNTED:
+        if (!appShouldBeActive) {
+          appsToUnmount.push(app);
+        }
+    }
+  });
+  return { appsToUnmount, appsToLoad, appsToMount };
 }

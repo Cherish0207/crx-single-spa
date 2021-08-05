@@ -19,13 +19,18 @@
       singleSpa.registerApplication(
         "app1",
         async () => {
+          console.log('loadApp...');
           // 这个函数必须返回生命周期函数
           return {
-            bootstrap: async () => {
-              console.log("应用启动");
-            }, // 此处可以传多个函数
+            bootstrap: [async () => {
+              console.log("bootstrap1");
+            },async () => {
+              console.log("bootstrap2");
+            },async () => {
+              console.log("bootstrap3");
+            }], // 此处可以传多个函数
             mount: async () => {
-              console.log("应用挂载");
+              console.log("mount");
             },
             unmount: async () => {
               console.log("应用卸载");

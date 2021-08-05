@@ -8,4 +8,5 @@
 
 整个 single-spa 其实就是个状态机,可以学到很多异步处理、封装代码的特点
 
+compose:redux koa(函数递归) single-spa
 qiankun 源码
