@@ -13,6 +13,7 @@ export function reroute() {
     appsToUnmount, // 获取要被卸载的
   } = getAppChanges();
   // console.log(appsToUnmount, appsToLoad, appsToMount);
+  // 打印了两次loadApp...的原因: start方法调用时是同步的,但是加载流程是异步的
   if (started) {
     // app装载
     console.log("调用start方法");
