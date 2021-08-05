@@ -8,9 +8,18 @@
   </head>
   <body>
     <a href="#/app1">应用1</a>
-    <a href="#/app2">应用2</a>
+    <a href="#/app2">应用2</a> <br />
+    <a onclick="a()">应用3</a>
+    <a onclick="b()">应用4</a>
+
     <script src="lib/umd/single-spa.js"></script>
     <script>
+      function a() {
+        history.pushState({}, "", "/a");
+      }
+      function b() {
+        history.pushState({}, "", "/b");
+      }
       /**
        * singleSpa.registerApplication: 默认会注册/预加载应用
        * appName: 应用名字
@@ -57,6 +66,48 @@
           };
         },
         (location) => location.hash.startsWith("#/app2"), // hash pathname h5api browserApi
+        { store: { name: "zf" } }
+      );
+
+      singleSpa.registerApplication(
+        "app3",
+        async () => {
+          console.log("a loadApp...");
+          // 这个函数必须返回生命周期函数
+          return {
+            bootstrap: async () => {
+              console.log("a bootstrap");
+            }, // 此处可以传多个函数
+            mount: async () => {
+              console.log("a mount");
+            },
+            unmount: async () => {
+              console.log("a unmount");
+            },
+          };
+        },
+        (location) => location.pathname.startsWith("/a"), // hash pathname h5api browserApi
+        { store: { name: "zf" } }
+      );
+
+      singleSpa.registerApplication(
+        "app4",
+        async () => {
+          console.log("b loadApp...");
+          // 这个函数必须返回生命周期函数
+          return {
+            bootstrap: async () => {
+              console.log("b bootstrap");
+            },
+            mount: async () => {
+              console.log("b mount");
+            },
+            unmount: async () => {
+              console.log("b unmount");
+            },
+          };
+        },
+        (location) => location.pathname.startsWith("/b"), // hash pathname h5api browserApi
         { store: { name: "zf" } }
       );
       singleSpa.start(); // 启动/挂载应用
